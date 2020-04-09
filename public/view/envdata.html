@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta charset="UTF-8">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.8.2/umd/popper.js"></script>
+ <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+ id="bootstrap-css">
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="C:/UseloginForms/rs/Admin/Desktop/login.css" media="all" />
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <title>Envoye Data</title>
+</head>
+
+<body>
+ <div class="container">
+ <div class="form-group mx-sm-3 mb-2">
+ <label for="data">Data env</label>
+ <input type="text" class="form-control" id="data" aria-describedby="emailHelp">
+ <small id="emailHelp" class="form-text text-muted">Msg a envoye vers le server.</small>
+ <button id="btnClick" type="submit" class="btn btn-primary mb-2">Envoye</button>
+ </div>
+ <div >
+ <h3 id="reponse" class="h3">
+ <!-- put reponse server -->
+ </h3>
+ </div> 
+ </div>
+
+ <script>
+ $(document).ready(function () {
+ // ? lISTNER sur btn 
+ $("#btnClick").click(function (event) {
+ event.preventDefault();
+ envdata();
+ });
+
+ /********************************************/
+ function envdata() {
+ // ? recup la valeur de input par ID
+ var msg = $("#data").val();
+ // ? formuler json pour envoye vers le server
+ var dataJson = {
+ msg: $("#data").val(),
+ };
+ // ? ajax request POST
+ $.ajax({
+ type: 'POST',
+ dataType: 'json',
+ data: JSON.stringify(dataJson),
+ url: 'http://localhost:3000/envdata',
+ contentType: 'application/json',
+ success: function (data) {
+ // ? affich => conosole
+ console.log('INFO CLIENT => success');
+ console.log(`\t\tdata reponse: ${data.reponse}`);
+ // ? add to html 
+ $("#reponse").append(`${data.reponse} : <strong> ${data.msg} </strong>`);
+ },
+ error: function (e) {
+ alert("Error!")
+ console.log("ERROR: ", e);
+ }
+ });
+
+ resetData(); // videz les champs inputs
+ }
+
+ /********************************************/
+ function resetData() {
+ $("#data").val("");
+ }
+ })
+ </script>
+</body>
+
+</html>

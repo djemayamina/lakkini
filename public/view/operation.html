@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta charset="UTF-8">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.8.2/umd/popper.js"></script>
+ <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+ id="bootstrap-css">
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="C:/UseloginForms/rs/Admin/Desktop/login.css" media="all" />
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <title>Envoye Data</title>
+</head>
+
+<body>
+ <div class="container">
+ <form id="appForm">
+ <div class="form-group mx-sm-3 mb-2">
+ <label for="a">valeur a</label>
+ <input type="text" class="form-control" id="a" aria-describedby="emailHelp">
+ <small id="emailHelp" class="form-text text-muted">Msg a envoye vers le server.</small>
+ </div>
+ <div class="form-group mx-sm-3 mb-2">
+ <label for="op">opration</label>
+ <select id="op" class="form-control">
+ <option value="plus">plus :+</option>
+ <option value="moin">moin :-</option>
+ <option value="mult">mult :*</option>
+ <option value="div">div :/</option>
+ </select>
+ </div>
+
+ <div class="form-group mx-sm-3 mb-2">
+ <label for="b">valeur b</label>
+ <input type="text" class="form-control" id="b" aria-describedby="emailHelp">
+ <small id="emailHelp" class="form-text text-muted">Msg a envoye vers le server.</small>
+ <button id="btnClick" type="submit" class="btn btn-primary mb-2">Envoye</button>
+ </div>
+ <div class="form-control">
+ <label id="result"> <!-- put result --> </label> 
+ </div>
+ </form>
+ </div>
+
+
+ <script>
+ $(document).ready(function () {
+ // ? lISTNER sur btn 
+ $("#btnClick").click(function (event) {
+ event.preventDefault();
+ envdata();
+ });
+
+ /********************************************/
+ function envdata() {
+ // ? recupreration les valeur des input par ID
+ var a= $("#a").val();
+ var b= $("#b").val();
+ var op= $("#op").val();
+ // ? formuler json pour envoye vers le server
+ var dataJson = {
+ a: a,
+ b: b,
+ op: op,
+ };
+ 
+ $.ajax({
+ type: 'POST',
+ dataType: 'json',
+ data: JSON.stringify(dataJson),
+ url: 'http://localhost:3000/operation',
+ contentType: 'application/json',
+ success: function (data) {
+ // ? affich => conosole
+ console.log('INFO CLIENT => success');
+ console.log(`\t\tdata result: ${data.result}`);
+ console.log(`\t\tformule : ${a} ${op} ${b} = ${data.result}`);
+ // ? add to html 
+ $("#result").append(`\t\tformule : ${a} ${op} ${b} = ${data.result}`);
+ },
+ error: function (e) {
+ alert("Error!")
+ console.log("ERROR: ", e);
+ }
+ });
+
+ resetData(); // videz les champs inputs
+ }
+
+ /********************************************/
+ function resetData() {
+ $("#a").val("");
+ $("#b").val("");
+ }
+ })
+ </script>
+</body>
+
+</html>
